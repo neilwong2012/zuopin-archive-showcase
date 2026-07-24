@@ -474,7 +474,7 @@ function PhonePreview({
   const runRequest = (label: string, complete: () => void) => {
     if (requestTimer.current) window.clearTimeout(requestTimer.current);
     setRequestLabel(label);
-    const delay = 560 + project.id.length * 55;
+    const delay = 190 + project.id.length * 18;
     requestTimer.current = window.setTimeout(() => {
       setRequestLabel("");
       complete();
@@ -493,7 +493,7 @@ function PhonePreview({
     searchTimer.current = window.setTimeout(() => {
       setSearchPending(false);
       searchTimer.current = null;
-    }, 720);
+    }, 240);
   };
 
   const act: DemoAction = (label, kind = "detail") => {
@@ -567,7 +567,7 @@ function PhonePreview({
     window.setTimeout(() => {
       setRequestLabel("");
       setDetail(result);
-    }, 680);
+    }, 225);
   };
 
   return (

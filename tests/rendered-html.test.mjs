@@ -55,6 +55,10 @@ test("publishes valid social metadata and local source assets", async () => {
 
   assert.match(page, /SOURCE UI/);
   assert.match(page, /前端演示数据/);
+  assert.match(page, /onTabChange/);
+  assert.match(page, /phone-search-results/);
+  assert.match(page, /setCartCount/);
+  assert.match(page, /简历投递成功/);
   assert.match(page, /wmall: \["icon-1"/);
   assert.match(page, /source-assets\/travel\/logo\.jpg/);
   assert.match(layout, /metadataBase/);

@@ -124,12 +124,26 @@ function StatusBar() {
   );
 }
 
+type ActionKind = "detail" | "toast" | "cart" | "favorite" | "live";
+type DemoAction = (label: string, kind?: ActionKind) => void;
+type DemoProps = {
+  query: string;
+  setQuery: (value: string) => void;
+  act: DemoAction;
+  go: (index: number) => void;
+  cartCount: number;
+  liked: boolean;
+  playing: boolean;
+};
+
 function SourceNav({
   project,
   activeTab,
+  onTabChange,
 }: {
   project: Project;
   activeTab: number;
+  onTabChange?: (index: number) => void;
 }) {
   const iconSets: Partial<Record<Project["id"], string[]>> = {
     wmall: ["icon-1", "icon-3", "icon-15", "icon-5"],
@@ -151,10 +165,15 @@ function SourceNav({
               ? `/source-assets/travel/${base}_${index === activeTab ? "green" : "gray"}.png`
               : null;
         return (
-          <span className={index === activeTab ? "is-active" : ""} key={tab}>
+          <button
+            className={index === activeTab ? "is-active" : ""}
+            key={tab}
+            onClick={() => onTabChange?.(index)}
+            aria-label={`打开${tab}`}
+          >
             {src ? <img src={src} alt="" /> : <i>{textIcons[index]}</i>}
             {tab}
-          </span>
+          </button>
         );
       })}
     </div>
@@ -201,9 +220,11 @@ const sectionContent: Record<Project["id"], string[][]> = {
 function SecondaryScreen({
   project,
   activeTab,
+  act,
 }: {
   project: Project;
   activeTab: number;
+  act: DemoAction;
 }) {
   const rows = sectionContent[project.id][activeTab] ?? sectionContent[project.id][0];
   return (
@@ -219,7 +240,7 @@ function SecondaryScreen({
       </div>
       <div className="secondary__rows">
         {rows.map((row, index) => (
-          <button key={row}>
+          <button key={row} onClick={() => act(row, "detail")}>
             <span>{String(index + 1).padStart(2, "0")}</span>
             <strong>{row}</strong>
             <i>›</i>
@@ -231,22 +252,22 @@ function SecondaryScreen({
   );
 }
 
-function HejHome() {
+function HejHome({ query, setQuery, act, go, cartCount }: DemoProps) {
   return (
     <div className="source-body hej-home">
-      <div className="hej-search">
+      <label className="hej-search">
         <img src="/source-assets/hej/search.png" alt="" />
-        搜索商品
-      </div>
-      <div className="hej-hero">
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索商品" aria-label="搜索商城商品" />
+      </label>
+      <button className="hej-hero" onClick={() => act("秋日生活提案", "detail")}>
         <small>新品首发 · MEMBER DAY</small>
         <strong>秋日生活提案</strong>
         <span>满 299 减 40</span>
-      </div>
-      <div className="hej-notice">
+      </button>
+      <button className="hej-notice" onClick={() => act("已设置 20:00 秒杀提醒", "toast")}>
         <img src="/source-assets/hej/announcement.png" alt="" />
         今日 20:00 限时秒杀开场
-      </div>
+      </button>
       <div className="mini-menu">
         {[
           ["cats.png", "全部分类"],
@@ -254,10 +275,13 @@ function HejHome() {
           ["", "限时秒杀"],
           ["cart.png", "购物车"],
         ].map(([icon, label], index) => (
-          <span key={label}>
+          <button
+            key={label}
+            onClick={() => index === 0 ? go(1) : index === 3 ? go(2) : act(index === 1 ? "已领取会员优惠券" : "已进入限时秒杀", "toast")}
+          >
             {icon ? <img src={`/source-assets/hej/${icon}`} alt="" /> : <i>{index === 1 ? "券" : "秒"}</i>}
-            {label}
-          </span>
+            {label}{index === 3 && cartCount > 0 ? <b>{cartCount}</b> : null}
+          </button>
         ))}
       </div>
       <div className="source-section-title"><strong>猜你喜欢</strong><span>更多 ›</span></div>
@@ -266,29 +290,31 @@ function HejHome() {
           ["#f0d6c3", "柔软家居毯", "¥129"],
           ["#d8e1e7", "轻量通勤包", "¥239"],
         ].map(([color, name, price]) => (
-          <button key={name}>
-            <i style={{ background: color }} />
-            <strong>{name}</strong>
-            <span>{price}<b>＋</b></span>
-          </button>
+          <article key={name}>
+            <button onClick={() => act(name, "detail")} aria-label={`查看${name}`}>
+              <i style={{ background: color }} />
+              <strong>{name}</strong>
+            </button>
+            <span>{price}<button onClick={() => act(name, "cart")} aria-label={`将${name}加入购物车`}>＋</button></span>
+          </article>
         ))}
       </div>
     </div>
   );
 }
 
-function WmallHome() {
+function WmallHome({ query, setQuery, act }: DemoProps) {
   return (
     <div className="source-body wmall-home">
       <div className="wmall-head">
-        <strong>⌖ 软件园二期</strong>
+        <button onClick={() => act("配送地址：软件园二期", "detail")}>⌖ 软件园二期</button>
         <span>天气 26°</span>
-        <div><img src="/source-assets/wmall/icon_search.png" alt="" />搜索商家或商品</div>
+        <label><img src="/source-assets/wmall/icon_search.png" alt="" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索商家或商品" aria-label="搜索外卖商家或商品" /></label>
       </div>
       <div className="wmall-promo">
         <small>新人专享</small>
         <strong>外卖红包天天领</strong>
-        <button>立即领取</button>
+        <button onClick={() => act("已领取 ¥8 新人红包", "toast")}>立即领取</button>
       </div>
       <div className="mini-menu wmall-menu">
         {[
@@ -296,8 +322,8 @@ function WmallHome() {
           ["discount_b.png", "优惠专区"],
           ["seckill.png", "限时抢购"],
           ["store1.png", "到店自取"],
-        ].map(([icon, label]) => (
-          <span key={label}><img src={`/source-assets/wmall/${icon}`} alt="" />{label}</span>
+        ].map(([icon, label], index) => (
+          <button key={label} onClick={() => index === 0 ? act("美食外卖", "detail") : index === 3 ? act("到店自取门店", "detail") : act(`已筛选：${label}`, "toast")}><img src={`/source-assets/wmall/${icon}`} alt="" />{label}</button>
         ))}
       </div>
       <div className="source-section-title"><strong>附近商家</strong><span>综合排序⌄</span></div>
@@ -306,7 +332,7 @@ function WmallHome() {
           ["川味小馆", "月售 1260", "满30减8", "28 分钟"],
           ["一碗好面", "月售 842", "新客立减", "22 分钟"],
         ].map(([name, sales, offer, time], index) => (
-          <button key={name}>
+          <button key={name} onClick={() => act(`${name} · ${offer}`, "detail")}>
             <i className={`food food--${index}`} />
             <span><strong>{name}</strong><small>★ 4.{9 - index} · {sales}</small><em>{offer}</em></span>
             <b>{time}</b>
@@ -317,46 +343,47 @@ function WmallHome() {
   );
 }
 
-function JobsHome() {
+function JobsHome({ query, setQuery, act, go }: DemoProps) {
   return (
     <div className="source-body jobs-home">
-      <div className="jobs-search"><strong>厦门⌄</strong><span>⌕ 搜索职位或企业</span></div>
-      <div className="jobs-banner">
+      <div className="jobs-search"><button onClick={() => act("当前城市：厦门", "detail")}>厦门⌄</button><label>⌕ <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索职位或企业" aria-label="搜索职位或企业" /></label></div>
+      <button className="jobs-banner" onClick={() => act("2026 夏季招聘专场", "detail")}>
         <small>2026 夏季招聘</small>
         <strong>找到真正适合你的工作</strong>
         <span>已有 3,286 家企业入驻</span>
-      </div>
+      </button>
       <div className="jobs-entry">
-        <button><img src="/source-assets/jobs/findjob.png" alt="" /><span><strong>我要找工作</strong><small>好职位一手掌握</small></span></button>
-        <button><img src="/source-assets/jobs/findwork.png" alt="" /><span><strong>企业招人才</strong><small>免费发布职位</small></span></button>
+        <button onClick={() => go(1)}><img src="/source-assets/jobs/findjob.png" alt="" /><span><strong>我要找工作</strong><small>好职位一手掌握</small></span></button>
+        <button onClick={() => go(2)}><img src="/source-assets/jobs/findwork.png" alt="" /><span><strong>企业招人才</strong><small>免费发布职位</small></span></button>
       </div>
       <div className="source-section-title"><strong>最新人才</strong><span>完善求职信息</span></div>
       <div className="talent-row">
         {["陈同学", "周设计", "林工程师"].map((name) => (
-          <span key={name}><img src="/source-assets/jobs/male0.png" alt="" /><small>{name}</small></span>
+          <button key={name} onClick={() => act(`${name}的在线简历`, "detail")}><img src="/source-assets/jobs/male0.png" alt="" /><small>{name}</small></button>
         ))}
       </div>
       <div className="source-section-title jobs-title"><strong>最新职位</strong><span>更多职位 ›</span></div>
-      <div className="job-row"><strong>高级产品设计师</strong><span>25–40K</span><small>创意科技 · 五险一金</small></div>
+      <button className="job-row" onClick={() => act("高级产品设计师", "detail")}><strong>高级产品设计师</strong><span>25–40K</span><small>创意科技 · 五险一金</small></button>
     </div>
   );
 }
 
-function LiveHome() {
+function LiveHome({ query, setQuery, act, liked, playing }: DemoProps) {
   return (
     <div className="source-body live-home">
-      <div className="live-search"><img src="/source-assets/live/search.png" alt="" />搜索话题、频道或商品名称</div>
-      <div className="live-cats">{["推荐", "体育", "音乐", "旅行", "生活"].map((x, i) => <span className={i === 0 ? "active" : ""} key={x}>{x}</span>)}</div>
-      <button className="live-card">
+      <label className="live-search"><img src="/source-assets/live/search.png" alt="" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索话题、频道或商品名称" aria-label="搜索直播内容" /></label>
+      <div className="live-cats">{["推荐", "体育", "音乐", "旅行", "生活"].map((x, i) => <button className={i === 0 ? "active" : ""} onClick={() => act(`已切换到${x}频道`, "toast")} key={x}>{x}</button>)}</div>
+      <button className={`live-card ${playing ? "is-playing" : ""}`} onClick={() => act("城市篮球挑战赛", "live")}>
         <img src="/source-assets/live/cover.jpg" alt="篮球运动直播封面" />
-        <span className="live-badge">直播中</span>
+        <span className="live-badge">{playing ? "播放中" : "直播中"}</span>
+        <i className="live-play">{playing ? "Ⅱ" : "▶"}</i>
         <span className="live-watch">8,426 人</span>
         <strong>城市篮球挑战赛 · 决赛现场</strong>
         <small>体育频道</small>
       </button>
       <div className="live-actions">
-        <button><img src="/source-assets/live/cards.png" alt="" />节目单</button>
-        <button><img src="/source-assets/live/share.png" alt="" />分享直播</button>
+        <button onClick={() => act("今日直播节目单", "detail")}><img src="/source-assets/live/cards.png" alt="" />节目单</button>
+        <button className={liked ? "is-liked" : ""} onClick={() => act("城市篮球挑战赛", "favorite")}><img src="/source-assets/live/share.png" alt="" />{liked ? "已收藏" : "收藏直播"}</button>
       </div>
       <div className="source-section-title"><strong>接下来直播</strong><span>查看更多 ›</span></div>
       <div className="live-next"><i /><span><strong>独立音乐现场</strong><small>20:30 开始 · 已预约 1,204 人</small></span></div>
@@ -364,13 +391,13 @@ function LiveHome() {
   );
 }
 
-function TravelHome() {
+function TravelHome({ act, go, cartCount }: DemoProps) {
   return (
     <div className="source-body travel-home">
       <div className="travel-bar"><img src="/source-assets/travel/logo.jpg" alt="" /><strong>国家级旅游景区</strong><span>•••</span></div>
-      <div className="travel-hero"><small>山水之间 · 自在出发</small><strong>清凉避暑季</strong><button>预约入园</button></div>
+      <div className="travel-hero"><small>山水之间 · 自在出发</small><strong>清凉避暑季</strong><button onClick={() => act("已选择今日入园", "toast")}>预约入园</button></div>
       <div className="mini-menu travel-menu">
-        {["景区门票", "游玩攻略", "地图导览", "扫码入园"].map((x, i) => <span key={x}><i>{["票", "游", "图", "码"][i]}</i>{x}</span>)}
+        {["景区门票", "游玩攻略", "地图导览", "扫码入园"].map((x, i) => <button key={x} onClick={() => act(x, "detail")}><i>{["票", "游", "图", "码"][i]}</i>{x}</button>)}
       </div>
       <div className="source-section-title travel-title"><strong><img src="/source-assets/travel/icon_fire.png" alt="" />热卖推荐</strong><span>更多 ›</span></div>
       <div className="travel-products">
@@ -378,14 +405,15 @@ function TravelHome() {
           ["travel-pic--one", "云顶景区成人票", "¥98", "已售 2860"],
           ["travel-pic--two", "森林索道往返票", "¥68", "已售 1542"],
         ].map(([className, name, price, sold]) => (
-          <button key={name}><i className={className} /><strong>{name}</strong><span><b>{price}</b><small>{sold}</small></span></button>
+          <article key={name}><button onClick={() => act(name, "detail")}><i className={className} /><strong>{name}</strong></button><span><b>{price}</b><button onClick={() => act(name, "cart")}>加入</button><small>{sold}</small></span></article>
         ))}
       </div>
+      {cartCount > 0 ? <button className="travel-cart-float" onClick={() => go(1)}>购物车 {cartCount}</button> : null}
     </div>
   );
 }
 
-function HealthHome() {
+function HealthHome({ act, go }: DemoProps) {
   return (
     <div className="source-body health-home">
       <div className="health-hero"><small>专业医疗服务平台</small><strong>今天，想咨询什么？</strong><span>7 × 24 小时在线服务</span></div>
@@ -395,16 +423,16 @@ function HealthHome() {
           ["yiyuan.png", "预约挂号"],
           ["tijiannew.png", "体检预约"],
           ["wenda.png", "咨询客服"],
-        ].map(([icon, label]) => <span key={label}><img src={`/source-assets/health/${icon}`} alt="" />{label}</span>)}
+        ].map(([icon, label], index) => <button key={label} onClick={() => index === 0 ? go(1) : index === 2 ? go(2) : act(label, "detail")}><img src={`/source-assets/health/${icon}`} alt="" />{label}</button>)}
       </div>
       <div className="source-section-title health-title"><strong>医疗服务</strong><span>最新预约：陈女士</span></div>
       <div className="health-services">
-        <button><span><strong>快速问诊</strong><small>平均 3 分钟接诊</small></span><i>问</i></button>
-        <button><span><strong>咨询客服</strong><small>免费咨询平台客服</small></span><img src="/source-assets/health/wenda.png" alt="" /></button>
+        <button onClick={() => go(1)}><span><strong>快速问诊</strong><small>平均 3 分钟接诊</small></span><i>问</i></button>
+        <button onClick={() => act("平台客服", "detail")}><span><strong>咨询客服</strong><small>免费咨询平台客服</small></span><img src="/source-assets/health/wenda.png" alt="" /></button>
       </div>
-      <div className="health-help"><strong>帮你解决</strong><div>{["皮肤问题", "儿童发热", "睡眠健康"].map((x) => <button key={x}>{x}</button>)}</div></div>
+      <div className="health-help"><strong>帮你解决</strong><div>{["皮肤问题", "儿童发热", "睡眠健康"].map((x) => <button onClick={() => act(x, "detail")} key={x}>{x}</button>)}</div></div>
       <div className="source-section-title"><strong>推荐专家</strong><span>更多 ›</span></div>
-      <div className="doctor"><i>医</i><span><strong>刘医生 <small>主任医师</small></strong><p>全科医学 · 已服务 2,408 人</p></span><b>可预约</b></div>
+      <button className="doctor" onClick={() => act("刘医生 · 主任医师", "detail")}><i>医</i><span><strong>刘医生 <small>主任医师</small></strong><p>全科医学 · 已服务 2,408 人</p></span><b>可预约</b></button>
     </div>
   );
 }
@@ -413,27 +441,108 @@ function PhonePreview({
   project,
   activeTab = 0,
   compact = false,
+  onTabChange,
 }: {
   project: Project;
   activeTab?: number;
   compact?: boolean;
+  onTabChange?: (index: number) => void;
 }) {
-  const homeById = {
-    hej: <HejHome />,
-    wmall: <WmallHome />,
-    jobs: <JobsHome />,
-    live: <LiveHome />,
-    travel: <TravelHome />,
-    health: <HealthHome />,
+  const [query, setQuery] = useState("");
+  const [detail, setDetail] = useState<string | null>(null);
+  const [toast, setToast] = useState("");
+  const [cartCount, setCartCount] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const interactive = Boolean(onTabChange) && !compact;
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(""), 1500);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
+
+  const act: DemoAction = (label, kind = "detail") => {
+    if (kind === "cart") {
+      setCartCount((count) => count + 1);
+      setToast(`${label}已加入`);
+    } else if (kind === "favorite") {
+      setLiked((value) => !value);
+      setToast(liked ? "已取消收藏" : "收藏成功");
+    } else if (kind === "live") {
+      setPlaying((value) => !value);
+      setToast(playing ? "直播已暂停" : "正在播放直播");
+    } else if (kind === "toast") {
+      setToast(label);
+    } else {
+      setDetail(label);
+    }
   };
+
+  const go = (index: number) => {
+    setDetail(null);
+    setQuery("");
+    onTabChange?.(index);
+  };
+
+  const demoProps: DemoProps = { query, setQuery, act, go, cartCount, liked, playing };
+  const homeById = {
+    hej: <HejHome {...demoProps} />,
+    wmall: <WmallHome {...demoProps} />,
+    jobs: <JobsHome {...demoProps} />,
+    live: <LiveHome {...demoProps} />,
+    travel: <TravelHome {...demoProps} />,
+    health: <HealthHome {...demoProps} />,
+  };
+
+  const primaryAction =
+    project.id === "jobs" ? "投递简历" :
+      project.id === "health" ? "确认预约" :
+        project.id === "live" ? "收藏直播" :
+          project.id === "travel" ? "加入购票车" : "加入购物车";
+
+  const confirmDetail = () => {
+    if (!detail) return;
+    if (project.id === "jobs" || project.id === "health") {
+      setToast(project.id === "jobs" ? "简历投递成功" : "预约申请已提交");
+    } else if (project.id === "live") {
+      setLiked(true);
+      setToast("收藏成功");
+    } else {
+      setCartCount((count) => count + 1);
+      setToast(`${detail}已加入`);
+    }
+    setDetail(null);
+  };
+
   return (
     <div
-      className={`source-phone source-phone--${project.id} ${compact ? "source-phone--compact" : ""}`}
+      className={`source-phone source-phone--${project.id} ${compact ? "source-phone--compact is-static" : ""}`}
       style={{ "--source-accent": project.accent, "--source-soft": project.soft } as React.CSSProperties}
     >
       <StatusBar />
-      {activeTab === 0 ? homeById[project.id] : <SecondaryScreen project={project} activeTab={activeTab} />}
-      <SourceNav project={project} activeTab={activeTab} />
+      {activeTab === 0 ? homeById[project.id] : <SecondaryScreen project={project} activeTab={activeTab} act={act} />}
+      {interactive && query ? (
+        <div className="phone-search-results">
+          <div><strong>“{query}”的结果</strong><button onClick={() => setQuery("")}>×</button></div>
+          {[`${query} · 精选结果`, `${query} · 热门推荐`, `${query} · 最近浏览`].map((result, index) => (
+            <button key={result} onClick={() => setDetail(result)}><span>{String(index + 1).padStart(2, "0")}</span><strong>{result}</strong><i>›</i></button>
+          ))}
+        </div>
+      ) : null}
+      {interactive && detail ? (
+        <div className="phone-detail">
+          <button className="phone-detail__back" onClick={() => setDetail(null)}>‹ 返回</button>
+          <small>INTERACTIVE DEMO</small>
+          <div className="phone-detail__art"><span>{project.name.slice(0, 1)}</span></div>
+          <h3>{detail}</h3>
+          <p>这是由前端假数据驱动的可操作详情页，沿用原项目的配色、导航与业务路径。</p>
+          <div><span><b>4.9</b> 用户评分</span><span><b>即时</b> 状态反馈</span></div>
+          <button className="phone-detail__primary" onClick={confirmDetail}>{primaryAction}</button>
+        </div>
+      ) : null}
+      {interactive && toast ? <div className="phone-toast" role="status">✓ {toast}</div> : null}
+      <SourceNav project={project} activeTab={activeTab} onTabChange={interactive ? go : undefined} />
     </div>
   );
 }
@@ -563,13 +672,13 @@ export default function Home() {
               </div>
               <div className="project-modal__tags">{selected.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
               <div className="project-modal__switcher">
-                <p>切换模拟页面</p>
+                <p>可从这里切换，也可直接点击手机底部导航</p>
                 <div>{selected.tabs.map((tab, index) => <button className={activeTab === index ? "is-active" : ""} onClick={() => setActiveTab(index)} key={tab}>{tab}</button>)}</div>
               </div>
             </div>
             <div className="project-modal__device">
-              <PhonePreview project={selected} activeTab={activeTab} />
-              <span className="project-modal__hint">原始样式 + 前端演示数据</span>
+              <PhonePreview key={selected.id} project={selected} activeTab={activeTab} onTabChange={setActiveTab} />
+              <span className="project-modal__hint">直接点击手机内的导航、搜索与业务按钮</span>
             </div>
           </div>
         </div>

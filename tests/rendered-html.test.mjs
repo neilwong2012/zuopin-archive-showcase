@@ -38,7 +38,33 @@ test("server-renders the source-derived portfolio", async () => {
   assert.match(html, /小智微直播/);
   assert.match(html, /景区旅游/);
   assert.match(html, /医疗小程序/);
+  assert.match(html, /26 \/ 743/);
+  for (const name of [
+    "掌门智慧房产",
+    "麦芒装饰装修 DIY",
+    "知识付费在线课程",
+    "知乎答题王",
+    "微教育",
+    "4S 汽车城",
+    "兵马俑实时导览",
+    "熊猫签证",
+    "超人名片",
+    "柚子律师",
+    "婚庆服务",
+    "米花同城社区",
+    "超人二手跳蚤市场",
+    "同城智慧红娘",
+    "上门预约服务",
+    "美容美发营销版",
+    "手机回收",
+    "步数宝",
+    "超人积分商城",
+    "志汇酒店营销",
+  ]) {
+    assert.match(html, new RegExp(name));
+  }
   assert.match(html, /\/source-assets\/live\/cover\.jpg/);
+  assert.match(html, /\/source-assets\/archive\/course\.webp/);
 });
 
 test("publishes valid social metadata and local source assets", async () => {
@@ -47,10 +73,11 @@ test("publishes valid social metadata and local source assets", async () => {
   assert.match(html, /property="og:image" content="https:\/\/zuopin-archive-neil\.neil-wong2012\.chatgpt\.site\/og\.png"/);
   assert.match(html, /name="twitter:card" content="summary_large_image"/);
 
-  const [page, layout, og] = await Promise.all([
+  const [page, layout, og, archiveAsset] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     access(new URL("../public/og.png", import.meta.url)),
+    access(new URL("../public/source-assets/archive/warriors.webp", import.meta.url)),
   ]);
 
   assert.match(page, /SOURCE UI/);
@@ -62,8 +89,11 @@ test("publishes valid social metadata and local source assets", async () => {
   assert.match(page, /模拟服务器响应/);
   assert.match(page, /window\.setTimeout/);
   assert.match(page, /正在加载/);
+  assert.match(page, /ArchiveHome/);
+  assert.match(page, /source-assets\/archive\/hotel\.webp/);
   assert.match(page, /wmall: \["icon-1"/);
   assert.match(page, /source-assets\/travel\/logo\.jpg/);
   assert.match(layout, /metadataBase/);
   assert.equal(og, undefined);
+  assert.equal(archiveAsset, undefined);
 });

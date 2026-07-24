@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type Project = {
-  id: "hej" | "wmall" | "jobs" | "live" | "travel" | "health";
+  id: string;
   name: string;
   version: string;
   category: string;
@@ -16,6 +16,12 @@ type Project = {
   tags: string[];
   tabs: string[];
   sourceNote: string;
+  template?: "property" | "education" | "travel" | "business" | "community" | "service" | "commerce";
+  hero?: string;
+  heroSub?: string;
+  asset?: string;
+  menu?: [string, string, string, string];
+  items?: [string, string, string];
 };
 
 const projects: Project[] = [
@@ -109,6 +115,426 @@ const projects: Project[] = [
     tabs: ["首页", "问诊", "体检", "我的"],
     sourceNote: "hyb_yl/index 首页服务流",
   },
+  {
+    id: "estate",
+    name: "掌门智慧房产",
+    version: "v1.3.27",
+    category: "房产家居",
+    eyebrow: "新房、二手房与经纪服务",
+    summary: "沿用源码首页的房源入口、区域筛选、经纪人和热门楼盘信息流，补充可操作的预约看房路径。",
+    accent: "#1aae91",
+    soft: "#e8f8f4",
+    dark: "#10362f",
+    metrics: [["1.3.27", "保留最新版"], ["房源", "多条件筛选"], ["预约", "看房业务流"]],
+    tags: ["热门楼盘", "地图找房", "预约看房"],
+    tabs: ["首页", "找房", "经纪人", "我的"],
+    sourceNote: "zm_house/pages/index/index + 原模块预览图",
+    template: "property",
+    hero: "好房不等人",
+    heroSub: "全城 1,286 套真实房源",
+    asset: "/source-assets/archive/estate.webp",
+    menu: ["新房", "二手房", "租房", "地图找房"],
+    items: ["云栖湖畔 · 三居", "软件园品质公寓", "鹭岛中央大宅"],
+  },
+  {
+    id: "renovation",
+    name: "麦芒装饰装修 DIY",
+    version: "v3.2.59",
+    category: "房产家居",
+    eyebrow: "装修灵感与在线设计",
+    summary: "根据源码绿色主题、装修计算器、案例和 VR 入口，还原一套从找灵感到预约设计的首页。",
+    accent: "#00cc99",
+    soft: "#e6faf5",
+    dark: "#073c31",
+    metrics: [["3.2.59", "保留最新版"], ["VR", "源码功能入口"], ["DIY", "装修方案"]],
+    tags: ["装修案例", "VR 看房", "在线报价"],
+    tabs: ["首页", "效果图", "计算器", "我的"],
+    sourceNote: "pages/index/index WXSS + public/diyimages/vr.png",
+    template: "property",
+    hero: "把理想家装进现实",
+    heroSub: "上传户型，免费获取 3 套方案",
+    asset: "/source-assets/archive/renovation.webp",
+    menu: ["效果图", "找设计师", "装修报价", "VR 全景"],
+    items: ["原木治愈两居", "轻法式主卧", "极简通透客厅"],
+  },
+  {
+    id: "course",
+    name: "知识付费在线课程",
+    version: "v7.1.2",
+    category: "教育知识",
+    eyebrow: "音视频与图文课程平台",
+    summary: "保留源码蓝紫主色、公告、分类、导师、免费课和音视频课程结构，重建学习操作。",
+    accent: "#6686e4",
+    soft: "#eef1ff",
+    dark: "#1d2852",
+    metrics: [["7.1.2", "保留最新版"], ["4 栏", "原始底部导航"], ["多媒体", "课程内容"]],
+    tags: ["音频课程", "视频课程", "导师主页"],
+    tabs: ["首页", "音频", "视频", "我的"],
+    sourceNote: "kuowan_video/pages/index + 原 banner.jpg",
+    template: "education",
+    hero: "今天学点新东西",
+    heroSub: "68 门体系课正在更新",
+    asset: "/source-assets/archive/course.webp",
+    menu: ["热门", "导师", "免费", "精美图文"],
+    items: ["设计思维入门", "零基础短视频课", "高效表达训练营"],
+  },
+  {
+    id: "answer",
+    name: "知乎答题王",
+    version: "v2.1.6",
+    category: "教育知识",
+    eyebrow: "竞技答题与段位成长",
+    summary: "依据源码紫色竞技界面、等级、每日奖励和赛季结算元素，模拟匹配、答题与领奖。",
+    accent: "#7d37e3",
+    soft: "#f2eaff",
+    dark: "#261044",
+    metrics: [["2.1.6", "保留最新版"], ["赛季", "段位体系"], ["即时", "匹配反馈"]],
+    tags: ["随机匹配", "段位奖励", "每日挑战"],
+    tabs: ["答题", "排行", "题库", "我的"],
+    sourceNote: "hc_answer/pages/index + #7d37e3 主题 WXSS",
+    template: "education",
+    hero: "知识王者挑战赛",
+    heroSub: "本赛季已有 12,408 人参赛",
+    asset: "/source-assets/archive/answer.webp",
+    menu: ["快速匹配", "好友对战", "每日一题", "赛季奖励"],
+    items: ["文学常识挑战", "生活百科 100 题", "科技前沿擂台"],
+  },
+  {
+    id: "school",
+    name: "微教育",
+    version: "v2.42.8",
+    category: "教育知识",
+    eyebrow: "校园通知与家校服务",
+    summary: "从源码的学校首页、课程、报名、成绩和周计划模块提炼出家校服务手机界面。",
+    accent: "#14a247",
+    soft: "#eaf8ef",
+    dark: "#0d3820",
+    metrics: [["2.42.8", "保留最新版"], ["家校", "双向信息"], ["课程", "报名管理"]],
+    tags: ["校园通知", "课程报名", "成绩查询"],
+    tabs: ["校园", "课程", "消息", "我的"],
+    sourceNote: "fm_jiaoyu/pages/home + public/mobile/img/enroll.png",
+    template: "education",
+    hero: "鹭岛实验学校",
+    heroSub: "让每一次成长都有记录",
+    asset: "/source-assets/archive/school.webp",
+    menu: ["校园通知", "在线报名", "课程表", "查成绩"],
+    items: ["暑期兴趣班报名", "本周校园开放日", "二年级课程提醒"],
+  },
+  {
+    id: "auto",
+    name: "4S 汽车城",
+    version: "v7.1.0",
+    category: "旅游出行",
+    eyebrow: "车型导购与到店预约",
+    summary: "使用源码蓝色导航、车型展示、指导价、销售咨询和到店预约结构恢复汽车城首页。",
+    accent: "#1296db",
+    soft: "#e8f5fc",
+    dark: "#0a3045",
+    metrics: [["7.1.0", "保留最新版"], ["车型", "价格导购"], ["到店", "试驾预约"]],
+    tags: ["车型图库", "询底价", "预约试驾"],
+    tabs: ["首页", "车型", "活动", "我的"],
+    sourceNote: "pages/index/index + images/tgc_01.jpg",
+    template: "travel",
+    hero: "驾驭你的下一程",
+    heroSub: "本月购车补贴最高 ¥12,000",
+    asset: "/source-assets/archive/auto.webp",
+    menu: ["热销车型", "询底价", "预约试驾", "门店导航"],
+    items: ["星越 L 智擎版", "极氪 007 后驱版", "领克 08 EM-P"],
+  },
+  {
+    id: "warriors",
+    name: "兵马俑实时导览",
+    version: "合集最新版",
+    category: "旅游出行",
+    eyebrow: "语音画册与景区导览",
+    summary: "按照原包截图和源码的水墨语音画册、导览地图、展品详情与播放控件进行交互还原。",
+    accent: "#8f2028",
+    soft: "#f7eeee",
+    dark: "#281719",
+    metrics: [["2 栏", "原始主导航"], ["语音", "展品讲解"], ["实时", "路线导览"]],
+    tags: ["语音画册", "展品故事", "实时导览"],
+    tabs: ["语音画册", "实时导览"],
+    sourceNote: "pages/index + pages/guide + src/scene5.png",
+    template: "travel",
+    hero: "秦始皇帝陵博物院",
+    heroSub: "水墨画册 · 边走边听",
+    asset: "/source-assets/archive/warriors.webp",
+    menu: ["一号坑", "二号坑", "文物陈列", "秦陵导览"],
+    items: ["高级军吏俑", "跪射武士俑", "彩绘铜车马"],
+  },
+  {
+    id: "visa",
+    name: "熊猫签证",
+    version: "合集最新版",
+    category: "旅游出行",
+    eyebrow: "目的地签证办理服务",
+    summary: "严格参考原包截图的大图目的地卡片、粉色底栏和订单流程，模拟签证材料提交。",
+    accent: "#f47f8a",
+    soft: "#fff0f2",
+    dark: "#462126",
+    metrics: [["3 国", "首页目的地"], ["材料", "在线提交"], ["订单", "进度跟踪"]],
+    tags: ["商务签", "旅游签", "材料清单"],
+    tabs: ["签证", "订单"],
+    sourceNote: "pandaVisa pages/index + 原包展示截图",
+    template: "travel",
+    hero: "说走就走，材料少跑",
+    heroSub: "热门国家最快 5 个工作日",
+    asset: "/source-assets/archive/visa.webp",
+    menu: ["日本", "新加坡", "澳大利亚", "全部国家"],
+    items: ["日本单次旅游签", "新加坡商务签", "澳大利亚访客签"],
+  },
+  {
+    id: "card",
+    name: "超人名片",
+    version: "v2.9.11",
+    category: "企业品牌",
+    eyebrow: "智能名片与客户经营",
+    summary: "依据最新版内层前端包的名片、动态、雷达和客户库模块，重建销售名片首页。",
+    accent: "#2a9df4",
+    soft: "#eaf5fe",
+    dark: "#0f3048",
+    metrics: [["2.9.11", "保留最新版"], ["雷达", "访客追踪"], ["名片", "一键交换"]],
+    tags: ["个人名片", "访客雷达", "客户库"],
+    tabs: ["名片", "动态", "雷达", "我的"],
+    sourceNote: "super_card/pages/home + resource/icon/cardbook",
+    template: "business",
+    hero: "让每次认识更有价值",
+    heroSub: "今日名片被查看 36 次",
+    asset: "/source-assets/archive/card.webp",
+    menu: ["交换名片", "拨打电话", "企业官网", "保存通讯录"],
+    items: ["AI 产品解决方案", "企业数字化案例", "本周客户动态"],
+  },
+  {
+    id: "lawyer",
+    name: "柚子律师",
+    version: "v1.7.0",
+    category: "企业品牌",
+    eyebrow: "律师咨询与案件服务",
+    summary: "沿用源码黑白红视觉、在线服务、业务范围、律师列表和咨询预约业务流。",
+    accent: "#ce0000",
+    soft: "#fbecec",
+    dark: "#321010",
+    metrics: [["1.7.0", "保留最新版"], ["律师", "专业领域"], ["咨询", "预约服务"]],
+    tags: ["付费咨询", "律师团队", "案例库"],
+    tabs: ["首页", "律师", "案例", "我的"],
+    sourceNote: "zhls_sun/pages/shouye/index + first/fenxiang.jpg",
+    template: "business",
+    hero: "专业法律服务",
+    heroSub: "已有 8,642 次咨询得到回复",
+    asset: "/source-assets/archive/lawyer.webp",
+    menu: ["在线预约", "付费咨询", "电话预约", "业务范围"],
+    items: ["劳动争议怎么处理", "合同风险快速审查", "婚姻家事咨询"],
+  },
+  {
+    id: "wedding",
+    name: "婚庆服务",
+    version: "v1.3.5",
+    category: "企业品牌",
+    eyebrow: "婚礼灵感与商家预约",
+    summary: "按源码粉色主题、婚纱分类、档期日历、案例和商家入驻模块实现婚庆展示。",
+    accent: "#f54264",
+    soft: "#fff0f3",
+    dark: "#43131d",
+    metrics: [["1.3.5", "保留最新版"], ["档期", "在线管理"], ["案例", "商家展示"]],
+    tags: ["婚礼案例", "婚纱礼服", "档期预约"],
+    tabs: ["灵感", "商家", "档期", "我的"],
+    sourceNote: "kundian_wedding/pages/index + img/enter_banner.jpg",
+    template: "business",
+    hero: "把喜欢写进婚礼",
+    heroSub: "2026 秋季热门档期开放预约",
+    asset: "/source-assets/archive/wedding.webp",
+    menu: ["婚礼策划", "婚纱礼服", "摄影跟拍", "婚宴酒店"],
+    items: ["海岛白色婚礼", "新中式园林宴", "落日草坪仪式"],
+  },
+  {
+    id: "city",
+    name: "米花同城社区",
+    version: "v7.8.3",
+    category: "社交社区",
+    eyebrow: "本地资讯与生活圈",
+    summary: "保留源码橙色导航、同城信息、商家、发布和个人中心结构，加入点赞与详情互动。",
+    accent: "#fb5100",
+    soft: "#fff0e8",
+    dark: "#49200c",
+    metrics: [["7.8.3", "保留最新版"], ["4 栏", "源码底部导航"], ["同城", "信息发布"]],
+    tags: ["同城动态", "附近商家", "便民信息"],
+    tabs: ["首页", "商家", "发布", "我的"],
+    sourceNote: "yc_youliao/page/index + tabBar #fb5100",
+    template: "community",
+    hero: "今天，同城有什么新鲜事",
+    heroSub: "厦门 · 3.2 万人在这里生活",
+    asset: "/source-assets/archive/city.webp",
+    menu: ["招聘求职", "房屋租售", "二手闲置", "拼车出行"],
+    items: ["周末海边市集开摊啦", "软件园附近求合租", "出一台九成新咖啡机"],
+  },
+  {
+    id: "flea",
+    name: "超人二手跳蚤市场",
+    version: "v5.4.10",
+    category: "社交社区",
+    eyebrow: "社区闲置物品交易",
+    summary: "依据源码橙色标记、城市、发布、距离和积分价格结构，恢复附近二手市场。",
+    accent: "#ff6600",
+    soft: "#fff1e6",
+    dark: "#47220b",
+    metrics: [["5.4.10", "保留最新版"], ["附近", "距离排序"], ["交易", "闲置发布"]],
+    tags: ["附近闲置", "发布物品", "收藏议价"],
+    tabs: ["市场", "分类", "发布", "我的"],
+    sourceNote: "pages/home/index WXSS + libs/images/poster.jpg",
+    template: "community",
+    hero: "让闲置流动起来",
+    heroSub: "附近 5 公里有 268 件好物",
+    asset: "/source-assets/archive/flea.webp",
+    menu: ["数码", "家居", "服饰", "免费送"],
+    items: ["九成新机械键盘", "搬家出宜家边桌", "复古胶片相机"],
+  },
+  {
+    id: "match",
+    name: "同城智慧红娘",
+    version: "v1.0.36",
+    category: "社交社区",
+    eyebrow: "同城相亲与红娘服务",
+    summary: "沿用源码粉色启动页、缘分推荐、招呼、礼物和资料认证元素，构建轻量互动。",
+    accent: "#ff677d",
+    soft: "#fff0f3",
+    dark: "#481921",
+    metrics: [["1.0.36", "保留最新版"], ["同城", "缘分推荐"], ["认证", "资料体系"]],
+    tags: ["缘分推荐", "在线招呼", "红娘牵线"],
+    tabs: ["缘分", "动态", "消息", "我的"],
+    sourceNote: "pages/start + ss48_match/images/love_broadcast_bg2.png",
+    template: "community",
+    hero: "开启你的同城缘分",
+    heroSub: "今日已有 128 对互相喜欢",
+    asset: "/source-assets/archive/match.webp",
+    menu: ["今日推荐", "附近的人", "红娘牵线", "实名认证"],
+    items: ["爱旅行的产品经理", "周末常去看展", "喜欢小动物的设计师"],
+  },
+  {
+    id: "o2o",
+    name: "上门预约服务",
+    version: "v4.10.9",
+    category: "生活服务",
+    eyebrow: "到家服务与人员预约",
+    summary: "按源码红色主题、优惠专区、服务分类、人员选择、立即购买和预约业务流还原。",
+    accent: "#ff0036",
+    soft: "#ffeaf0",
+    dark: "#43000f",
+    metrics: [["4.10.9", "保留最新版"], ["上门", "预约服务"], ["人员", "可选技师"]],
+    tags: ["服务分类", "预约时间", "上门人员"],
+    tabs: ["首页", "分类", "订单", "我的"],
+    sourceNote: "xg_o2o/index/index + #ff0036 主题 WXSS",
+    template: "service",
+    hero: "家务事，交给专业的人",
+    heroSub: "最快 30 分钟响应",
+    asset: "/source-assets/archive/o2o.webp",
+    menu: ["家电清洗", "日常保洁", "上门维修", "收纳整理"],
+    items: ["空调深度清洗", "全屋日常保洁", "水电上门检修"],
+  },
+  {
+    id: "beauty",
+    name: "美容美发营销版",
+    version: "v3.4.6",
+    category: "生活服务",
+    eyebrow: "门店项目与技师预约",
+    summary: "结合源码黑色导航、服务项目、会员、优惠券和门店展示资源，重建预约首页。",
+    accent: "#b08a5a",
+    soft: "#f6f0e8",
+    dark: "#30251a",
+    metrics: [["3.4.6", "保留最新版"], ["门店", "会员营销"], ["预约", "服务时段"]],
+    tags: ["门店项目", "技师预约", "会员权益"],
+    tabs: ["首页", "服务", "预约", "我的"],
+    sourceNote: "xc_beauty/pages/index + resource/images/display.jpg",
+    template: "service",
+    hero: "为今天的自己焕新",
+    heroSub: "新客到店体验 ¥68 起",
+    asset: "/source-assets/archive/beauty.webp",
+    menu: ["剪发造型", "染烫护理", "美容护理", "预约技师"],
+    items: ["高级设计师剪发", "头皮深层护理", "日系透明感染发"],
+  },
+  {
+    id: "recycle",
+    name: "手机回收",
+    version: "v4.0.6",
+    category: "生活服务",
+    eyebrow: "旧机估价、回收与维修",
+    summary: "沿用源码黑黄配色、热门型号、故障选择、估价订单和维修四栏导航。",
+    accent: "#d8b839",
+    soft: "#fff9df",
+    dark: "#332d10",
+    metrics: [["4.0.6", "保留最新版"], ["4 栏", "原始业务导航"], ["估价", "回收流程"]],
+    tags: ["热门机型", "在线估价", "回收订单"],
+    tabs: ["我要回收", "我要维修", "订单", "我的"],
+    sourceNote: "pages/index/recycle + resource/images/banner.png",
+    template: "service",
+    hero: "旧手机，换个好价钱",
+    heroSub: "顺丰包邮 · 隐私清除 · 极速打款",
+    asset: "/source-assets/archive/recycle.webp",
+    menu: ["苹果", "华为", "小米", "全部机型"],
+    items: ["iPhone 15 Pro", "Mate 60 Pro", "小米 14"],
+  },
+  {
+    id: "step",
+    name: "步数宝",
+    version: "v9.6.3",
+    category: "生活服务",
+    eyebrow: "步数兑换与运动激励",
+    summary: "依据源码紫色渐变、今日步数、金币领取、签到和换购商品结构构建运动首页。",
+    accent: "#9f64f8",
+    soft: "#f3ecff",
+    dark: "#2d164b",
+    metrics: [["9.6.3", "保留最新版"], ["步数", "每日清零"], ["换购", "金币商城"]],
+    tags: ["微信步数", "每日签到", "步数换购"],
+    tabs: ["步数", "换购", "活动", "我的"],
+    sourceNote: "hc_step/pages/index + #9f64f8 主题 WXSS",
+    template: "service",
+    hero: "8,642",
+    heroSub: "今日步数 · 再走 1,358 步达标",
+    asset: "/source-assets/archive/step.webp",
+    menu: ["领取金币", "每日签到", "邀请好友", "步数排行"],
+    items: ["运动水杯 8,000 步", "轻量跳绳 12,000 步", "会员月卡 20,000 步"],
+  },
+  {
+    id: "points",
+    name: "超人积分商城",
+    version: "v6.3.23",
+    category: "电商零售",
+    eyebrow: "会员积分兑换商城",
+    summary: "参考源码 DIY 首页、兑换、购物车、热卖组件和积分价格，模拟兑换与结算。",
+    accent: "#ff5a36",
+    soft: "#fff0ec",
+    dark: "#44180e",
+    metrics: [["6.3.23", "保留最新版"], ["积分", "兑换价格"], ["DIY", "商城首页"]],
+    tags: ["积分兑换", "热卖商品", "兑换记录"],
+    tabs: ["首页", "分类", "兑换车", "我的"],
+    sourceNote: "pages/index + style2/diy/img/hotimg.png",
+    template: "commerce",
+    hero: "积分也能买好物",
+    heroSub: "会员日兑换低至 5 折",
+    asset: "/source-assets/archive/points.webp",
+    menu: ["数码好物", "居家生活", "优惠券", "积分抽奖"],
+    items: ["便携随行杯", "品牌数据线", "视频会员月卡"],
+  },
+  {
+    id: "hotel",
+    name: "志汇酒店营销",
+    version: "v8.5.8",
+    category: "餐饮外卖",
+    eyebrow: "酒店查询、预订与会员",
+    summary: "使用最新叮咚酒店源码的深蓝色日期查询、房型列表、积分、充值与预订路径进行还原。",
+    accent: "#172a97",
+    soft: "#eceefe",
+    dark: "#111b52",
+    metrics: [["8.5.8", "合并后最新版"], ["日期", "入住查询"], ["会员", "积分营销"]],
+    tags: ["日期查询", "房型预订", "会员积分"],
+    tabs: ["预订", "酒店", "订单", "我的"],
+    sourceNote: "zh_jdgjb/pages/index/index + #172A97 主题 WXSS",
+    template: "travel",
+    hero: "今晚住得更好一点",
+    heroSub: "厦门 · 7 月 25 日至 26 日",
+    asset: "/source-assets/archive/hotel.webp",
+    menu: ["钟点房", "亲子酒店", "海景房", "会员专区"],
+    items: ["环岛路海景大床房", "城市中心行政套房", "亲子主题双床房"],
+  },
 ];
 
 function ArrowIcon() {
@@ -180,7 +606,7 @@ function SourceNav({
   );
 }
 
-const sectionContent: Record<Project["id"], string[][]> = {
+const sectionContent: Partial<Record<Project["id"], string[][]>> = {
   hej: [
     ["精选好物", "今日上新 28 件", "会员专享券"],
     ["居家生活", "数码电器", "服装配饰"],
@@ -226,7 +652,14 @@ function SecondaryScreen({
   activeTab: number;
   act: DemoAction;
 }) {
-  const rows = sectionContent[project.id][activeTab] ?? sectionContent[project.id][0];
+  const genericRows = [
+    project.items ?? ["精选内容", "热门推荐", "最近浏览"],
+    project.menu ? [...project.menu.slice(0, 3)] : ["全部分类", "热门排行", "专属推荐"],
+    ["待处理记录", "最近完成", "全部记录"],
+    ["个人资料", "收藏内容", "服务与帮助"],
+  ];
+  const sourceRows = sectionContent[project.id];
+  const rows = sourceRows?.[activeTab] ?? sourceRows?.[0] ?? genericRows[activeTab] ?? genericRows[0];
   return (
     <div className={`source-body secondary secondary--${project.id}`}>
       <div className="secondary__title">
@@ -437,6 +870,92 @@ function HealthHome({ act, go }: DemoProps) {
   );
 }
 
+function ArchiveHome({ project, ...demo }: { project: Project } & DemoProps) {
+  const menu = project.menu ?? ["精选", "分类", "活动", "我的"];
+  const items = project.items ?? ["精选内容", "热门推荐", "最近上新"];
+  const showSearch = !["answer", "step", "warriors"].includes(project.id);
+  const template = project.template ?? "business";
+  const itemAction: ActionKind = template === "commerce" ? "cart" : "detail";
+
+  return (
+    <div className={`source-body archive-home archive-home--${template} archive-home--${project.id}`}>
+      <div className="archive-topbar">
+        <strong>{project.name}</strong>
+        <span>•••</span>
+      </div>
+      {showSearch ? (
+        <label className="archive-search">
+          <span>⌕</span>
+          <input
+            value={demo.query}
+            onChange={(event) => demo.setQuery(event.target.value)}
+            placeholder={`搜索${project.tabs[0]}内容`}
+            aria-label={`搜索${project.name}`}
+          />
+        </label>
+      ) : null}
+      <button className="archive-hero" onClick={() => demo.act(project.hero ?? project.name, "detail")}>
+        {project.asset ? <img src={project.asset} alt="" /> : null}
+        <span className="archive-hero__shade" />
+        <span className="archive-hero__copy">
+          <small>{project.heroSub}</small>
+          <strong>{project.hero}</strong>
+          <i>{template === "community" ? "立即加入" : template === "education" ? "开始体验" : "查看详情"} ›</i>
+        </span>
+      </button>
+      <div className="archive-menu">
+        {menu.map((label, index) => (
+          <button
+            key={label}
+            onClick={() => index > 0 && index < project.tabs.length ? demo.go(index) : demo.act(label, index === 0 ? "detail" : "toast")}
+          >
+            <i>{label.slice(0, 1)}</i>
+            <span>{label}</span>
+          </button>
+        ))}
+      </div>
+      <div className="archive-section-title">
+        <strong>{template === "community" ? "同城正在发生" : template === "education" ? "继续学习" : template === "property" ? "为你精选" : "热门推荐"}</strong>
+        <button onClick={() => demo.act("全部内容", "detail")}>全部 ›</button>
+      </div>
+      <div className="archive-items">
+        {items.map((item, index) => (
+          <article key={item}>
+            <button className="archive-item__main" onClick={() => demo.act(item, "detail")}>
+              <i style={{ background: `color-mix(in srgb, ${project.accent} ${28 + index * 9}%, #f2eee7)` }}>
+                {project.asset && index === 0 ? <img src={project.asset} alt="" /> : <span>{String(index + 1).padStart(2, "0")}</span>}
+              </i>
+              <span>
+                <strong>{item}</strong>
+                <small>
+                  {template === "community" ? `${index + 2}.${index + 3}km · ${28 + index * 17} 条互动` :
+                    template === "education" ? `${index + 8} 课时 · ${86 + index * 4}% 好评` :
+                      template === "service" ? `最快今日可约 · 已服务 ${168 + index * 91}` :
+                        template === "travel" ? `今日可订 · ${320 + index * 184} 人选择` :
+                          `精选推荐 · ${98 + index * 76} 人关注`}
+                </small>
+              </span>
+            </button>
+            <button
+              className="archive-item__action"
+              onClick={() => demo.act(item, itemAction)}
+              aria-label={`${template === "commerce" ? "兑换" : "打开"}${item}`}
+            >
+              {template === "commerce" ? "＋" : "›"}
+            </button>
+          </article>
+        ))}
+      </div>
+      {["service", "property", "business"].includes(template) ? (
+        <button className="archive-quick" onClick={() => demo.act(template === "property" ? "已提交看房需求" : "预约申请已提交", "toast")}>
+          <span>{template === "property" ? "专属顾问在线" : "现在可以预约"}</span>
+          <strong>{template === "property" ? "帮我找房" : "立即预约"}</strong>
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 function PhonePreview({
   project,
   activeTab = 0,
@@ -531,7 +1050,7 @@ function PhonePreview({
   };
 
   const demoProps: DemoProps = { query, setQuery: handleQuery, act, go, cartCount, liked, playing };
-  const homeById = {
+  const homeById: Partial<Record<string, React.ReactNode>> = {
     hej: <HejHome {...demoProps} />,
     wmall: <WmallHome {...demoProps} />,
     jobs: <JobsHome {...demoProps} />,
@@ -544,16 +1063,21 @@ function PhonePreview({
     project.id === "jobs" ? "投递简历" :
       project.id === "health" ? "确认预约" :
         project.id === "live" ? "收藏直播" :
-          project.id === "travel" ? "加入购票车" : "加入购物车";
+          project.id === "travel" ? "加入购票车" :
+            project.template === "commerce" ? "确认兑换" :
+              ["service", "property", "business"].includes(project.template ?? "") ? "立即预约" :
+                project.template === "community" ? "发起互动" : "查看下一步";
 
   const confirmDetail = () => {
     if (!detail) return;
     runRequest("正在提交并等待服务器确认", () => {
-      if (project.id === "jobs" || project.id === "health") {
+      if (project.id === "jobs" || project.id === "health" || ["service", "property", "business"].includes(project.template ?? "")) {
         setToast(project.id === "jobs" ? "简历投递成功" : "预约申请已提交");
       } else if (project.id === "live") {
         setLiked(true);
         setToast("收藏成功");
+      } else if (project.template === "community" || project.template === "education" || project.template === "travel") {
+        setToast(project.template === "community" ? "互动请求已发送" : "已进入下一步");
       } else {
         setCartCount((count) => count + 1);
         setToast(`${detail}已加入`);
@@ -576,7 +1100,7 @@ function PhonePreview({
       style={{ "--source-accent": project.accent, "--source-soft": project.soft } as React.CSSProperties}
     >
       <StatusBar />
-      {activeTab === 0 ? homeById[project.id] : <SecondaryScreen project={project} activeTab={activeTab} act={act} />}
+      {activeTab === 0 ? homeById[project.id] ?? <ArchiveHome project={project} {...demoProps} /> : <SecondaryScreen project={project} activeTab={activeTab} act={act} />}
       {interactive && query ? (
         <div className="phone-search-results">
           <div><strong>“{query}”的结果</strong><button onClick={() => handleQuery("")}>×</button></div>
@@ -645,7 +1169,7 @@ export default function Home() {
       <header className="site-header">
         <a className="brand" href="#top" aria-label="回到顶部"><span>作</span><strong>作品档案</strong></a>
         <nav aria-label="主导航"><a href="#works">精选作品</a><a href="#method">还原方式</a></nav>
-        <a className="header-count" href="#works">6 / 743</a>
+        <a className="header-count" href="#works">26 / 743</a>
       </header>
 
       <section className="hero" id="top">
@@ -653,7 +1177,7 @@ export default function Home() {
           <p className="kicker"><span />SOURCE ARCHIVE · 2026</p>
           <h1>让旧源码<br /><em>按原样重现。</em></h1>
           <p className="hero__intro">
-            从 12GB、743 个真实项目中，先完成 6 个代表作品。展示保留各自源码的颜色、首页结构与图标，
+            从 12GB、743 个真实项目中，先完成 26 个代表作品。展示保留各自源码的颜色、首页结构与图标，
             仅把失效后台替换成可交互的前端假数据。
           </p>
           <div className="hero__actions">
@@ -675,13 +1199,13 @@ export default function Home() {
         <div className="statement__stats">
           <div><strong>743</strong><span>整理后的作品总数</span></div>
           <div><strong>10</strong><span>一级行业类目</span></div>
-          <div><strong>6</strong><span>首批源码还原案例</span></div>
+          <div><strong>26</strong><span>已完成源码还原案例</span></div>
         </div>
       </section>
 
       <section className="works" id="works">
         <div className="section-heading">
-          <div><p>SELECTED SOURCE WORKS</p><h2>首批作品展示</h2></div>
+          <div><p>SELECTED SOURCE WORKS</p><h2>26 个作品展示</h2></div>
           <div className="filters" role="group" aria-label="按类目筛选">
             {categories.map((category) => (
               <button className={filter === category ? "is-active" : ""} key={category} onClick={() => setFilter(category)}>{category}</button>
@@ -719,7 +1243,7 @@ export default function Home() {
 
       <footer>
         <div className="brand brand--footer"><span>作</span><strong>作品档案</strong></div>
-        <p>首批 6 个源码还原作品 · 持续整理中</p>
+        <p>已完成 26 个源码还原作品 · 持续整理中</p>
         <a href="#top">回到顶部 ↑</a>
       </footer>
 

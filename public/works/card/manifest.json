@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0486",
+  "slug": "card",
+  "name": "超人名片",
+  "version": "v2.9.11",
+  "category": "企业品牌",
+  "sourceBasis": "super_card/pages/home + dynamic + radar + cardbook",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "card",
+      "label": "名片",
+      "kind": "card"
+    },
+    {
+      "id": "feed",
+      "label": "动态",
+      "kind": "feed"
+    },
+    {
+      "id": "radar",
+      "label": "雷达",
+      "kind": "radar"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

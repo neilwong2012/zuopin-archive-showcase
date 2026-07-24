@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0437",
+  "slug": "course",
+  "name": "知识付费在线课程",
+  "version": "v7.1.2",
+  "category": "教育知识",
+  "sourceBasis": "kuowan_video/pages/index + audiomenu + videomenu",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "home",
+      "label": "首页",
+      "kind": "home"
+    },
+    {
+      "id": "audio",
+      "label": "音频",
+      "kind": "audio"
+    },
+    {
+      "id": "video",
+      "label": "视频",
+      "kind": "video"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

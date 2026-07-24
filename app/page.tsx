@@ -1140,7 +1140,6 @@ function PhonePreview({
 export default function Home() {
   const [filter, setFilter] = useState("全部");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState(0);
   const categories = ["全部", ...new Set(projects.map((project) => project.category))];
   const visibleProjects = useMemo(
     () => filter === "全部" ? projects : projects.filter((project) => project.category === filter),
@@ -1161,7 +1160,6 @@ export default function Home() {
 
   const openProject = (id: string) => {
     setSelectedId(id);
-    setActiveTab(0);
   };
 
   return (
@@ -1262,12 +1260,20 @@ export default function Home() {
               </div>
               <div className="project-modal__tags">{selected.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
               <div className="project-modal__switcher">
-                <p>请直接点击手机底部导航，页面会模拟向服务器请求数据。</p>
+                <p>此作品从独立目录加载，拥有自己的入口、样式、路由状态和本地资源。</p>
+                <a href={`/works/${selected.id}/`} target="_blank" rel="noreferrer">单独打开完整作品 <ArrowIcon /></a>
               </div>
             </div>
             <div className="project-modal__device">
-              <PhonePreview key={selected.id} project={selected} activeTab={activeTab} onTabChange={setActiveTab} />
-              <span className="project-modal__hint">直接点击手机内的导航、搜索与业务按钮</span>
+              <div className="standalone-phone">
+                <iframe
+                  key={selected.id}
+                  src={`/works/${selected.id}/`}
+                  title={`${selected.name} 独立交互作品`}
+                  loading="eager"
+                />
+              </div>
+              <span className="project-modal__hint">独立作品目录 · 可操作全部底部导航与核心业务页面</span>
             </div>
           </div>
         </div>

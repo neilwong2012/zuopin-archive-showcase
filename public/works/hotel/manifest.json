@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0174",
+  "slug": "hotel",
+  "name": "志汇酒店营销",
+  "version": "v8.5.8",
+  "category": "餐饮外卖",
+  "sourceBasis": "zh_jdgjb/pages/index + hotel_list + order + jifen",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "rooms",
+      "label": "预订",
+      "kind": "rooms"
+    },
+    {
+      "id": "catalog",
+      "label": "酒店",
+      "kind": "catalog"
+    },
+    {
+      "id": "orders",
+      "label": "订单",
+      "kind": "orders"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

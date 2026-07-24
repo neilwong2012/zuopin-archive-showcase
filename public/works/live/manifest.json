@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0719",
+  "slug": "live",
+  "name": "小智微直播",
+  "version": "v3.9.5",
+  "category": "文娱内容",
+  "sourceBasis": "movieIndex + movie + cash-money",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "live",
+      "label": "直播",
+      "kind": "live"
+    },
+    {
+      "id": "channels",
+      "label": "频道",
+      "kind": "channels"
+    },
+    {
+      "id": "favorites",
+      "label": "收藏",
+      "kind": "favorites"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0517",
+  "slug": "flea",
+  "name": "超人二手跳蚤市场",
+  "version": "v5.4.10",
+  "category": "社交社区",
+  "sourceBasis": "pages/home + city + post + my",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "catalog",
+      "label": "市场",
+      "kind": "catalog"
+    },
+    {
+      "id": "category",
+      "label": "分类",
+      "kind": "catalog"
+    },
+    {
+      "id": "publish",
+      "label": "发布",
+      "kind": "publish"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

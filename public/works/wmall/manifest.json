@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0157",
+  "slug": "wmall",
+  "name": "啦啦外卖",
+  "version": "v19.9.0",
+  "category": "餐饮外卖",
+  "sourceBasis": "pages/home/index + pages/order + pages/paotui",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "home",
+      "label": "首页",
+      "kind": "home"
+    },
+    {
+      "id": "orders",
+      "label": "订单",
+      "kind": "orders"
+    },
+    {
+      "id": "errand",
+      "label": "跑腿",
+      "kind": "errand"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0602",
+  "slug": "o2o",
+  "name": "上门预约服务",
+  "version": "v4.10.9",
+  "category": "生活服务",
+  "sourceBasis": "xg_o2o/index + cateitem + personnel + order",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "home",
+      "label": "首页",
+      "kind": "home"
+    },
+    {
+      "id": "service",
+      "label": "分类",
+      "kind": "service"
+    },
+    {
+      "id": "orders",
+      "label": "订单",
+      "kind": "orders"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

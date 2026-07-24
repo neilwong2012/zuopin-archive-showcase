@@ -1,0 +1,27 @@
+{
+  "workId": "WORK-0449",
+  "slug": "warriors",
+  "name": "兵马俑实时导览",
+  "version": "合集最新版",
+  "category": "旅游出行",
+  "sourceBasis": "pages/index + pages/guide + pages/scene + pages/detail",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "gallery",
+      "label": "语音画册",
+      "kind": "gallery"
+    },
+    {
+      "id": "map",
+      "label": "实时导览",
+      "kind": "map"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

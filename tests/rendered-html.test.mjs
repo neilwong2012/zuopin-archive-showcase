@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -91,9 +91,43 @@ test("publishes valid social metadata and local source assets", async () => {
   assert.match(page, /正在加载/);
   assert.match(page, /ArchiveHome/);
   assert.match(page, /source-assets\/archive\/hotel\.webp/);
+  assert.match(page, /src=\{`\/works\/\$\{selected\.id\}\//);
+  assert.match(page, /独立作品目录/);
   assert.match(page, /wmall: \["icon-1"/);
   assert.match(page, /source-assets\/travel\/logo\.jpg/);
   assert.match(layout, /metadataBase/);
   assert.equal(og, undefined);
   assert.equal(archiveAsset, undefined);
+});
+
+test("ships every work as an independent multi-route mini app", async () => {
+  const worksUrl = new URL("../public/works/", import.meta.url);
+  const entries = (await readdir(worksUrl, { withFileTypes: true }))
+    .filter((entry) => entry.isDirectory())
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  assert.equal(entries.length, 26);
+
+  let routeCount = 0;
+  for (const entry of entries) {
+    const folder = new URL(`${entry.name}/`, worksUrl);
+    const [manifest, app, styles] = await Promise.all([
+      readFile(new URL("manifest.json", folder), "utf8").then(JSON.parse),
+      readFile(new URL("app.js", folder), "utf8"),
+      readFile(new URL("styles.css", folder), "utf8"),
+      access(new URL("index.html", folder)),
+      access(new URL("assets/hero.webp", folder)),
+    ]);
+
+    assert.equal(manifest.slug, entry.name);
+    assert.ok(manifest.routes.length >= 2, `${entry.name} should have multiple source-derived routes`);
+    assert.match(manifest.sourceBasis, /\S/);
+    assert.match(app, /const PROJECT = /);
+    assert.match(app, /function renderPage/);
+    assert.match(styles, /--accent:/);
+    assert.doesNotMatch(app, /works\/_shared/);
+    routeCount += manifest.routes.length;
+  }
+
+  assert.equal(routeCount, 100);
 });

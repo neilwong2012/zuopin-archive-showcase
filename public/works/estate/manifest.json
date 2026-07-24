@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0287",
+  "slug": "estate",
+  "name": "掌门智慧房产",
+  "version": "v1.3.27",
+  "category": "房产家居",
+  "sourceBasis": "zm_house/pages/index + house detail + broker",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "home",
+      "label": "首页",
+      "kind": "home"
+    },
+    {
+      "id": "property",
+      "label": "找房",
+      "kind": "property"
+    },
+    {
+      "id": "agents",
+      "label": "经纪人",
+      "kind": "agents"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

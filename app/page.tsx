@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Project = {
   id: "hej" | "wmall" | "jobs" | "live" | "travel" | "health";
@@ -454,7 +454,16 @@ function PhonePreview({
   const [cartCount, setCartCount] = useState(0);
   const [liked, setLiked] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [requestLabel, setRequestLabel] = useState("");
+  const [searchPending, setSearchPending] = useState(false);
+  const requestTimer = useRef<number | null>(null);
+  const searchTimer = useRef<number | null>(null);
   const interactive = Boolean(onTabChange) && !compact;
+
+  useEffect(() => () => {
+    if (requestTimer.current) window.clearTimeout(requestTimer.current);
+    if (searchTimer.current) window.clearTimeout(searchTimer.current);
+  }, []);
 
   useEffect(() => {
     if (!toast) return;
@@ -462,30 +471,66 @@ function PhonePreview({
     return () => window.clearTimeout(timer);
   }, [toast]);
 
-  const act: DemoAction = (label, kind = "detail") => {
-    if (kind === "cart") {
-      setCartCount((count) => count + 1);
-      setToast(`${label}已加入`);
-    } else if (kind === "favorite") {
-      setLiked((value) => !value);
-      setToast(liked ? "已取消收藏" : "收藏成功");
-    } else if (kind === "live") {
-      setPlaying((value) => !value);
-      setToast(playing ? "直播已暂停" : "正在播放直播");
-    } else if (kind === "toast") {
-      setToast(label);
-    } else {
-      setDetail(label);
+  const runRequest = (label: string, complete: () => void) => {
+    if (requestTimer.current) window.clearTimeout(requestTimer.current);
+    setRequestLabel(label);
+    const delay = 560 + project.id.length * 55;
+    requestTimer.current = window.setTimeout(() => {
+      setRequestLabel("");
+      complete();
+      requestTimer.current = null;
+    }, delay);
+  };
+
+  const handleQuery = (value: string) => {
+    setQuery(value);
+    if (searchTimer.current) window.clearTimeout(searchTimer.current);
+    if (!value.trim()) {
+      setSearchPending(false);
+      return;
     }
+    setSearchPending(true);
+    searchTimer.current = window.setTimeout(() => {
+      setSearchPending(false);
+      searchTimer.current = null;
+    }, 720);
+  };
+
+  const act: DemoAction = (label, kind = "detail") => {
+    const requestText =
+      kind === "cart" ? "正在更新购物车" :
+        kind === "favorite" ? "正在同步收藏状态" :
+          kind === "live" ? "正在连接直播流" :
+            kind === "toast" ? "正在提交请求" : "正在读取详情";
+    runRequest(requestText, () => {
+      if (kind === "cart") {
+        setCartCount((count) => count + 1);
+        setToast(`${label}已加入`);
+      } else if (kind === "favorite") {
+        setLiked((value) => !value);
+        setToast(liked ? "已取消收藏" : "收藏成功");
+      } else if (kind === "live") {
+        setPlaying((value) => !value);
+        setToast(playing ? "直播已暂停" : "正在播放直播");
+      } else if (kind === "toast") {
+        setToast(label);
+      } else {
+        setDetail(label);
+      }
+    });
   };
 
   const go = (index: number) => {
-    setDetail(null);
-    setQuery("");
-    onTabChange?.(index);
+    if (index === activeTab) return;
+    runRequest(`正在加载${project.tabs[index]}`, () => {
+      setDetail(null);
+      setQuery("");
+      setSearchPending(false);
+      onTabChange?.(index);
+    });
   };
 
-  const demoProps: DemoProps = { query, setQuery, act, go, cartCount, liked, playing };
+  const demoProps: DemoProps = { query, setQuery: handleQuery, act, go, cartCount, liked, playing };
   const homeById = {
     hej: <HejHome {...demoProps} />,
     wmall: <WmallHome {...demoProps} />,
@@ -503,16 +548,26 @@ function PhonePreview({
 
   const confirmDetail = () => {
     if (!detail) return;
-    if (project.id === "jobs" || project.id === "health") {
-      setToast(project.id === "jobs" ? "简历投递成功" : "预约申请已提交");
-    } else if (project.id === "live") {
-      setLiked(true);
-      setToast("收藏成功");
-    } else {
-      setCartCount((count) => count + 1);
-      setToast(`${detail}已加入`);
-    }
-    setDetail(null);
+    runRequest("正在提交并等待服务器确认", () => {
+      if (project.id === "jobs" || project.id === "health") {
+        setToast(project.id === "jobs" ? "简历投递成功" : "预约申请已提交");
+      } else if (project.id === "live") {
+        setLiked(true);
+        setToast("收藏成功");
+      } else {
+        setCartCount((count) => count + 1);
+        setToast(`${detail}已加入`);
+      }
+      setDetail(null);
+    });
+  };
+
+  const openSearchResult = (result: string) => {
+    setRequestLabel("正在读取详情");
+    window.setTimeout(() => {
+      setRequestLabel("");
+      setDetail(result);
+    }, 680);
   };
 
   return (
@@ -524,10 +579,14 @@ function PhonePreview({
       {activeTab === 0 ? homeById[project.id] : <SecondaryScreen project={project} activeTab={activeTab} act={act} />}
       {interactive && query ? (
         <div className="phone-search-results">
-          <div><strong>“{query}”的结果</strong><button onClick={() => setQuery("")}>×</button></div>
-          {[`${query} · 精选结果`, `${query} · 热门推荐`, `${query} · 最近浏览`].map((result, index) => (
-            <button key={result} onClick={() => setDetail(result)}><span>{String(index + 1).padStart(2, "0")}</span><strong>{result}</strong><i>›</i></button>
-          ))}
+          <div><strong>“{query}”的结果</strong><button onClick={() => handleQuery("")}>×</button></div>
+          {searchPending ? (
+            <div className="phone-search-pending"><i /><span>正在向服务器查询…</span></div>
+          ) : (
+            [`${query} · 精选结果`, `${query} · 热门推荐`, `${query} · 最近浏览`].map((result, index) => (
+              <button key={result} onClick={() => openSearchResult(result)}><span>{String(index + 1).padStart(2, "0")}</span><strong>{result}</strong><i>›</i></button>
+            ))
+          )}
         </div>
       ) : null}
       {interactive && detail ? (
@@ -539,6 +598,13 @@ function PhonePreview({
           <p>这是由前端假数据驱动的可操作详情页，沿用原项目的配色、导航与业务路径。</p>
           <div><span><b>4.9</b> 用户评分</span><span><b>即时</b> 状态反馈</span></div>
           <button className="phone-detail__primary" onClick={confirmDetail}>{primaryAction}</button>
+        </div>
+      ) : null}
+      {interactive && requestLabel ? (
+        <div className="phone-request-loading" role="status" aria-live="polite">
+          <i />
+          <strong>{requestLabel}</strong>
+          <span>模拟服务器响应</span>
         </div>
       ) : null}
       {interactive && toast ? <div className="phone-toast" role="status">✓ {toast}</div> : null}
@@ -672,8 +738,7 @@ export default function Home() {
               </div>
               <div className="project-modal__tags">{selected.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
               <div className="project-modal__switcher">
-                <p>可从这里切换，也可直接点击手机底部导航</p>
-                <div>{selected.tabs.map((tab, index) => <button className={activeTab === index ? "is-active" : ""} onClick={() => setActiveTab(index)} key={tab}>{tab}</button>)}</div>
+                <p>请直接点击手机底部导航，页面会模拟向服务器请求数据。</p>
               </div>
             </div>
             <div className="project-modal__device">

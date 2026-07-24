@@ -306,6 +306,12 @@ img { display: block; }
 .phone-search-results > button span { color:var(--source-accent); font-family:var(--font-geist-mono),monospace; font-size:7px; }
 .phone-search-results > button strong { font-size:9px; }
 .phone-search-results > button i { color:#aaa; font-size:14px; font-style:normal; }
+.phone-search-results > .phone-search-pending { align-items:center; background:#fff; border-radius:8px; display:flex; flex-direction:column; gap:10px; justify-content:center; margin:0; min-height:125px; }
+.phone-search-pending i, .phone-request-loading > i {
+  animation:phone-server-spin .85s linear infinite; border:3px solid rgba(0,0,0,.1);
+  border-radius:50%; border-top-color:var(--source-accent); display:block; height:25px; width:25px;
+}
+.phone-search-pending span { color:#888; font-size:8px; }
 .phone-detail { background:#fff; padding:14px 16px 20px; }
 .phone-detail__back { background:transparent; border:0; color:#666; font-size:9px; padding:0; }
 .phone-detail > small { color:var(--source-accent); display:block; font-family:var(--font-geist-mono),monospace; font-size:7px; letter-spacing:.12em; margin-top:25px; }
@@ -318,6 +324,18 @@ img { display: block; }
 .phone-detail > div:not(.phone-detail__art) b { color:#333; font-size:10px; }
 .phone-detail__primary { background:var(--source-accent); border:0; border-radius:99px; color:#fff; font-size:9px; font-weight:800; margin-top:16px; padding:11px; width:100%; }
 .phone-toast { background:rgba(20,20,20,.9); border-radius:99px; bottom:68px; color:#fff; font-size:8px; left:50%; max-width:82%; padding:8px 12px; position:absolute; text-align:center; transform:translateX(-50%); white-space:nowrap; z-index:12; }
+.phone-request-loading {
+  align-items:center; backdrop-filter:blur(5px); background:rgba(255,255,255,.88); bottom:54px;
+  display:flex; flex-direction:column; gap:8px; justify-content:center; left:0; position:absolute;
+  right:0; top:24px; z-index:20;
+}
+.phone-request-loading > i { height:30px; width:30px; }
+.phone-request-loading strong { font-size:10px; margin-top:4px; }
+.phone-request-loading span { color:#999; font-size:7px; }
+
+@keyframes phone-server-spin {
+  to { transform:rotate(360deg); }
+}
 
 .statement { padding:120px 7vw 100px; }
 .statement > p, .process > p { font-family:var(--font-geist-mono),monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; }
@@ -445,4 +463,5 @@ footer a { justify-self:end; }
 @media (prefers-reduced-motion:reduce) {
   html { scroll-behavior:auto; }
   * { transition:none !important; }
+  .phone-search-pending i, .phone-request-loading > i { animation:none; border-color:var(--source-accent); }
 }

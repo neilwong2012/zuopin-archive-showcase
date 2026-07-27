@@ -100,6 +100,17 @@ test("publishes valid social metadata and local source assets", async () => {
   assert.equal(archiveAsset, undefined);
 });
 
+test("keeps hash-anchor pages scrollable", async () => {
+  const [page, styles] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.doesNotMatch(page, /document\.body\.style\.overflow/);
+  assert.match(styles, /html \{ overflow-y: auto; scroll-behavior: auto; \}/);
+  assert.match(styles, /\.project-modal \{[^}]*overscroll-behavior:contain;/);
+});
+
 test("ships every work as an independent multi-route mini app", async () => {
   const worksUrl = new URL("../public/works/", import.meta.url);
   const entries = (await readdir(worksUrl, { withFileTypes: true }))

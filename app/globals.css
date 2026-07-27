@@ -9,7 +9,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { overflow-y: auto; scroll-behavior: auto; }
 body {
   margin: 0;
   background: var(--paper);
@@ -484,7 +484,7 @@ footer { align-items:center; background:#141414; color:#fff; display:grid; grid-
 footer p, footer a { color:rgba(255,255,255,.5); font-size:12px; }
 footer a { justify-self:end; }
 
-.project-modal { inset:0; position:fixed; z-index:100; }
+.project-modal { inset:0; overscroll-behavior:contain; position:fixed; z-index:100; }
 .project-modal__backdrop { backdrop-filter:blur(9px); background:rgba(0,0,0,.68); border:0; inset:0; position:absolute; width:100%; }
 .project-modal__panel { background:#f8f7f3; display:grid; grid-template-columns:1fr .85fr; inset:3.5vh 3vw; max-height:93vh; overflow:hidden; position:absolute; }
 .project-modal__close { background:#171717; border:0; border-radius:50%; color:#fff; font-size:24px; height:42px; line-height:1; position:absolute; right:20px; top:20px; width:42px; z-index:5; }

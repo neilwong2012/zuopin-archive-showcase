@@ -261,7 +261,7 @@ function search(route) {
 
 function hero() {
   return '<button class="hero" data-detail="' + esc(PROJECT.hero) + '">' +
-    (PROJECT.hasAsset ? '<img src="./zuopin-archive-showcase/assets/hero.webp" alt="">' : '') +
+    (PROJECT.hasAsset ? '<img src="./assets/hero.webp" alt="">' : '') +
     '<span class="hero-shade"></span><span class="hero-copy"><small>' + esc(PROJECT.sub) + '</small><strong>' + esc(PROJECT.hero) + '</strong><i>查看详情 ›</i></span>' +
   '</button>';
 }
@@ -344,7 +344,7 @@ function feedPage(route) {
 
 function livePage(route) {
   return '<button class="live-stage ' + (state.playing ? "playing" : "") + '" data-play="1">' +
-    (PROJECT.hasAsset ? '<img src="./zuopin-archive-showcase/assets/hero.webp" alt="直播封面">' : '') +
+    (PROJECT.hasAsset ? '<img src="./assets/hero.webp" alt="直播封面">' : '') +
     '<span class="live-badge">' + (state.playing ? "播放中" : "LIVE") + '</span><i>' + (state.playing ? "Ⅱ" : "▶") + '</i><strong>' + esc(PROJECT.hero) + '</strong><small>' + esc(PROJECT.sub) + '</small></button>' +
     '<div class="section-title"><strong>节目列表</strong><span>实时更新</span></div>' + cards(route.items);
 }
@@ -440,7 +440,7 @@ function nav() {
 function detail() {
   if (!state.detail) return "";
   return '<section class="detail"><button class="detail-back" data-close-detail="1">‹ 返回</button><small>' + esc(PROJECT.category) + ' · INTERACTIVE DEMO</small>' +
-    '<div class="detail-art">' + (PROJECT.hasAsset ? '<img src="./zuopin-archive-showcase/assets/hero.webp" alt="">' : '<span>' + esc(PROJECT.name.slice(0, 1)) + '</span>') + '</div>' +
+    '<div class="detail-art">' + (PROJECT.hasAsset ? '<img src="./assets/hero.webp" alt="">' : '<span>' + esc(PROJECT.name.slice(0, 1)) + '</span>') + '</div>' +
     '<h2>' + esc(state.detail) + '</h2><p>此页面使用前端假数据模拟原小程序的业务流程，提交操作会保留短暂的服务器响应等待。</p>' +
     '<div class="detail-info"><span><b>4.9</b>用户评分</span><span><b>即时</b>状态反馈</span></div>' +
     '<div class="detail-actions"><button data-favorite="' + esc(state.detail) + '">' + (state.favorite.includes(state.detail) ? "已收藏" : "收藏") + '</button><button class="primary" data-complete="' + esc(state.detail) + '">' + esc(PROJECT.primaryAction) + '</button></div></section>';

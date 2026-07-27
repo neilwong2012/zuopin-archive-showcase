@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0593",
+  "slug": "beauty",
+  "name": "美容美发营销版",
+  "version": "v3.4.6",
+  "category": "生活服务",
+  "sourceBasis": "xc_beauty/pages/index + service + store_member",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "home",
+      "label": "首页",
+      "kind": "home"
+    },
+    {
+      "id": "service",
+      "label": "服务",
+      "kind": "service"
+    },
+    {
+      "id": "booking",
+      "label": "预约",
+      "kind": "booking"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

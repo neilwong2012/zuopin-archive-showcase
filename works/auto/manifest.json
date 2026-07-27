@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0444",
+  "slug": "auto",
+  "name": "4S 汽车城",
+  "version": "v7.1.0",
+  "category": "旅游出行",
+  "sourceBasis": "pages/index + photo + website + activity",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "home",
+      "label": "首页",
+      "kind": "home"
+    },
+    {
+      "id": "cars",
+      "label": "车型",
+      "kind": "cars"
+    },
+    {
+      "id": "activities",
+      "label": "活动",
+      "kind": "activities"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

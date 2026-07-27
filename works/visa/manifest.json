@@ -1,0 +1,27 @@
+{
+  "workId": "WORK-0477",
+  "slug": "visa",
+  "name": "熊猫签证",
+  "version": "合集最新版",
+  "category": "旅游出行",
+  "sourceBasis": "pages/index + pages/apply + pages/order",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "visa",
+      "label": "签证",
+      "kind": "visa"
+    },
+    {
+      "id": "orders",
+      "label": "订单",
+      "kind": "orders"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

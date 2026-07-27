@@ -1,0 +1,37 @@
+{
+  "workId": "WORK-0424",
+  "slug": "school",
+  "name": "微教育",
+  "version": "v2.42.8",
+  "category": "教育知识",
+  "sourceBasis": "fm_jiaoyu/pages/index + home + order + detail",
+  "scope": "用户端主导航与核心业务链路",
+  "routes": [
+    {
+      "id": "home",
+      "label": "校园",
+      "kind": "home"
+    },
+    {
+      "id": "school",
+      "label": "课程",
+      "kind": "school"
+    },
+    {
+      "id": "messages",
+      "label": "消息",
+      "kind": "messages"
+    },
+    {
+      "id": "profile",
+      "label": "我的",
+      "kind": "profile"
+    }
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "assets/hero.webp"
+  ]
+}

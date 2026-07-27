@@ -161,6 +161,10 @@ test("ships every work as an independent multi-route mini app", async () => {
     assert.match(app, /function renderPage/);
     assert.match(styles, /--accent:/);
     assert.doesNotMatch(app, /works\/_shared/);
+    if (entry.name === "renovation") {
+      assert.match(styles, /grid-template-columns:100px minmax\(0,1fr\)/);
+      assert.match(styles, /\.calculator input\{[^}]*min-width:0;[^}]*width:100%/);
+    }
     routeCount += manifest.routes.length;
   }
 

@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  type MouseEvent as ReactMouseEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 type Project = {
   id: string;
@@ -1137,6 +1143,30 @@ function PhonePreview({
   );
 }
 
+const managedAnchorIds = new Set(["top", "method", "works"]);
+
+function positionManagedAnchor(id: string, mode: "push" | "replace") {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  const destination = Math.max(
+    0,
+    Math.round(target.getBoundingClientRect().top + window.scrollY),
+  );
+  const baseUrl = `${window.location.pathname}${window.location.search}`;
+  const nextUrl = `${baseUrl}#${id}`;
+
+  if (mode === "replace") {
+    window.history.replaceState(window.history.state, "", baseUrl);
+    window.scrollTo({ top: destination, behavior: "auto" });
+    window.history.replaceState(window.history.state, "", nextUrl);
+    return;
+  }
+
+  window.history.pushState({ anchor: id }, "", nextUrl);
+  window.scrollTo({ top: destination, behavior: "auto" });
+}
+
 export default function Home() {
   const [filter, setFilter] = useState("全部");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -1153,16 +1183,37 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  useEffect(() => {
+    const restoreManagedAnchor = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      if (managedAnchorIds.has(id)) positionManagedAnchor(id, "replace");
+    };
+    const frame = window.requestAnimationFrame(restoreManagedAnchor);
+    window.addEventListener("popstate", restoreManagedAnchor);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("popstate", restoreManagedAnchor);
+    };
+  }, []);
+
   const openProject = (id: string) => {
     setSelectedId(id);
+  };
+
+  const navigateToAnchor = (
+    event: ReactMouseEvent<HTMLAnchorElement>,
+    id: string,
+  ) => {
+    event.preventDefault();
+    positionManagedAnchor(id, "push");
   };
 
   return (
     <main>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="回到顶部"><span>作</span><strong>作品档案</strong></a>
-        <nav aria-label="主导航"><a href="#works">精选作品</a><a href="#method">还原方式</a></nav>
-        <a className="header-count" href="#works">26 / 743</a>
+        <a className="brand" href="#top" onClick={(event) => navigateToAnchor(event, "top")} aria-label="回到顶部"><span>作</span><strong>作品档案</strong></a>
+        <nav aria-label="主导航"><a href="#works" onClick={(event) => navigateToAnchor(event, "works")}>精选作品</a><a href="#method" onClick={(event) => navigateToAnchor(event, "method")}>还原方式</a></nav>
+        <a className="header-count" href="#works" onClick={(event) => navigateToAnchor(event, "works")}>26 / 743</a>
       </header>
 
       <section className="hero" id="top">
@@ -1174,7 +1225,7 @@ export default function Home() {
             仅把失效后台替换成可交互的前端假数据。
           </p>
           <div className="hero__actions">
-            <a className="button button--dark" href="#works">浏览源码还原作品 <ArrowIcon /></a>
+            <a className="button button--dark" href="#works" onClick={(event) => navigateToAnchor(event, "works")}>浏览源码还原作品 <ArrowIcon /></a>
             <span>原始视觉 · 假数据交互 · 响应式展示</span>
           </div>
         </div>
@@ -1237,7 +1288,7 @@ export default function Home() {
       <footer>
         <div className="brand brand--footer"><span>作</span><strong>作品档案</strong></div>
         <p>已完成 26 个源码还原作品 · 持续整理中</p>
-        <a href="#top">回到顶部 ↑</a>
+        <a href="#top" onClick={(event) => navigateToAnchor(event, "top")}>回到顶部 ↑</a>
       </footer>
 
       {selected && (

@@ -107,6 +107,10 @@ test("keeps hash-anchor pages scrollable", async () => {
   ]);
 
   assert.doesNotMatch(page, /document\.body\.style\.overflow/);
+  assert.match(page, /function positionManagedAnchor/);
+  assert.match(page, /history\.pushState/);
+  assert.match(page, /history\.replaceState/);
+  assert.match(page, /window\.addEventListener\("popstate"/);
   assert.match(styles, /html \{ overflow-y: auto; scroll-behavior: auto; \}/);
   assert.match(styles, /\.project-modal \{[^}]*overscroll-behavior:contain;/);
 });

@@ -111,6 +111,26 @@ test("keeps hash-anchor pages scrollable", async () => {
   assert.match(styles, /\.project-modal \{[^}]*overscroll-behavior:contain;/);
 });
 
+test("preserves standalone work asset paths in the GitHub Pages build", async () => {
+  const buildUrl = new URL("../scripts/build-github-pages.mjs", import.meta.url);
+  buildUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
+  await import(buildUrl.href);
+
+  const app = await readFile(
+    new URL("../.github-pages/works/hej/app.js", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(app, /src="\.\/assets\/hero\.webp"/);
+  assert.doesNotMatch(app, /\.\/zuopin-archive-showcase\/assets\//);
+  assert.equal(
+    await access(
+      new URL("../.github-pages/works/hej/assets/hero.webp", import.meta.url),
+    ),
+    undefined,
+  );
+});
+
 test("ships every work as an independent multi-route mini app", async () => {
   const worksUrl = new URL("../public/works/", import.meta.url);
   const entries = (await readdir(worksUrl, { withFileTypes: true }))

@@ -43,6 +43,15 @@ await writeFile(join(outputRoot, "index.html"), await response.text());
 const textExtensions = new Set([".html", ".js", ".css", ".json", ".xml", ".txt", ""]);
 const assetRoots = ["/assets/", "/source-assets/", "/works/", "/og.png"];
 
+function rewriteAbsoluteRoot(text, assetRoot) {
+  const escapedRoot = assetRoot.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const absoluteRootPattern = new RegExp(`(^|[^.A-Za-z0-9_-])${escapedRoot}`, "g");
+  return text.replace(
+    absoluteRootPattern,
+    (_, prefix) => `${prefix}${basePath}${assetRoot}`,
+  );
+}
+
 async function rewriteTree(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const absolute = join(directory, entry.name);
@@ -55,7 +64,12 @@ async function rewriteTree(directory) {
     let text = await readFile(absolute, "utf8");
     text = text.replaceAll(sitesOrigin, pagesOrigin);
     for (const assetRoot of assetRoots) {
-      text = text.replaceAll(assetRoot, `${basePath}${assetRoot}`);
+      text = rewriteAbsoluteRoot(text, assetRoot);
+    }
+    for (const relativePrefix of [`./${repositoryName}/`, `../${repositoryName}/`]) {
+      if (text.includes(relativePrefix)) {
+        throw new Error(`Repository base path was inserted into a relative URL: ${absolute}`);
+      }
     }
     await writeFile(absolute, text);
   }
